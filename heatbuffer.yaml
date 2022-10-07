@@ -89,3 +89,7 @@ sensor:
     name: "Sensor dolny"
     id: "lowerTemp"
     
+output:
+  - platform: gpio
+    pin: D4
+    id: gpio_relay
