@@ -1,0 +1,91 @@
+esphome:
+  name: termostat_bufora
+
+esp8266:
+  board: d1_mini
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  password: ""
+
+ota:
+  password: ""
+
+wifi:
+  ssid: "realme 8 Pro"
+  password: "dupa1234"
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Termostat Bufora"
+    password: "BpqkX634mwBV"
+
+captive_portal:
+#//
+
+font:
+  - file: "arial.ttf"
+    id: arial
+    size: 10 
+
+i2c:
+  sda: D2
+  scl: D1
+  
+display:
+  - platform: ssd1306_i2c
+    model: "SSD1306 64x48"
+    reset_pin: D0
+    address: 0x3C
+    lambda: |-
+      it.printf(0, 0, id(arial), "Top : %.1f °C", id(upperTemp).state);
+      it.printf(0, 9, id(arial), "Bot.: %.1f °C", id(lowerTemp).state);
+      it.printf(0, 18, id(arial), "SET: %.1f °C", id(targetTemp).state);
+      it.printf(0, 27, id(arial), "set: %.1f °C", id(minimalTemp).state);
+      it.printf(0, 36, id(arial), "Relay: %s", "ON");
+
+number:
+  - platform: template
+    name: "Temperatura zadana"
+    id: "targetTemp"
+    restore_value: True
+    initial_value: 75
+    optimistic: True
+    min_value: 40
+    max_value: 80
+    step: 1 
+  - platform: template
+    name: "Temperatura minimalna"
+    id: "minimalTemp"
+    optimistic: True
+    restore_value: True
+    initial_value: 35
+    min_value: 30
+    max_value: 45
+    step: 1
+  - platform: template
+    name: "Temperatura maksymalna"
+    id: "maximalTemp"
+    optimistic: True
+    restore_value: True
+    initial_value: 75
+    min_value: 75
+    max_value: 85
+    step: 1    
+
+dallas:
+  - pin: D3
+    update_interval: 2s
+sensor: 
+  - platform: dallas
+    index: 0
+    name: "Sensor górny"
+    id: "upperTemp"   
+  - platform: dallas
+    index: 1 
+    name: "Sensor dolny"
+    id: "lowerTemp"
+    
